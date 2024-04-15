@@ -1,13 +1,16 @@
 package dbSample;
 
 import java.sql.Connection;
-
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class DbConnectSample02 {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class DbConnectSample03 {
 
     public static void main(String[] args) {
         
@@ -31,22 +34,26 @@ public class DbConnectSample02 {
             stmt = con.createStatement();
             
             // 4, 5. Select文の実行と結果を格納／代入
-            String sql = "SELECT * FROM country LIMIT 50";
+            System.out.print("検索キーワードを入力してください> ");
+            String input = keyIn();
+            
+            String sql = " select * from country where Name = '" + input +"' ";
             rs = stmt.executeQuery(sql);
             
             // 6. 結果を表示する
             while(rs.next()) {
+                
                 //Nameの列の値を取得
                 String name = rs.getString("Name");
+                
+                //Poplationの列の値を取得
+                int poplation = rs.getInt("Population");
+                
                 //取得した値を表示
                 System.out.println(name);
-                
+                System.out.println(poplation);
             }
             
-            //6-1.データの更新を行う
-            sql = " update country set Population = 105000 where Code = 'ABW' ";
-            int count = stmt.executeUpdate(sql);
-            System.out.println(count);
         
         } catch (ClassNotFoundException e) {
             System.err.println("JDBCドライバーのロードに失敗しました。");
@@ -83,12 +90,24 @@ public class DbConnectSample02 {
                  System.err.println("データベース切断時にエラーが発生しました。");
                  e.printStackTrace();
              }
-             
          }
         }
+             
+         
+        }
         
-        
+        //キーボードから入力された値をStringで返す 引数：なし 戻り値：入力された文字列
+         private static String keyIn() {
+             String line = null;
+             try {
+                BufferedReader key = new BufferedReader(new InputStreamReader(System.in));
+                line = key.readLine();
+            } catch (IOException e) {
+                
+            }
+             return line;
+         }
 
-    }
+    
 
 }
